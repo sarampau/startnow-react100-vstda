@@ -1,3 +1,3 @@
-In this project you wil be creating a simple todo application which will add a todo, give it a priority, will be able to edit the todo and its priority, complete the todo and finally delete the todo from your list. 
+In this project you will be creating your own application using two different api's and all the knowledge you have gathered so far.
 
-This project is saved under the file name: ~/oca/startnow-react100-vstda
+This project is saved under the file name: ~/oca/startnow-react100-hackathon

@@ -1,55 +1,61 @@
 import React, { Component } from 'react';
-import NewTodo from './newtodo';
-import TodoList from './todolist';
+import axios from 'axios';
+import Teams from './teams';
+import Players from './players';
 
 class App extends Component {
   constructor(props) {
     super(props);
+
     this.state = {
-      todos: []
+      teams: [],
+      players: []
     };
-    this.handleClick = this.handleClick.bind(this);
-    this.handleDeleteTodo = this.handleDeleteTodo.bind(this);
+
+    this.updateTeam = this.updateTeam.bind(this);
   }
 
-  handleClick(todo) {
-    const todos = this.state.todos.slice();
-    todos.push(todo);
-    this.setState({
-      todos: todos
+  componentWillMount() {
+    axios.get('https://www.thesportsdb.com/api/v1/json/1/search_all_teams.php?l=English%20Premier%20League')
+    .then((res) => {
+      axios.get('https://www.thesportsdb.com/api/v1/json/1/searchplayers.php?t=')
+      .then((r) => {
+        this.setState({
+          teams: res.data.teams
+        });
+      });
     });
   }
 
-  handleDeleteTodo(e) {
-    const newTodos = [...this.state.todos];
-    const id = e.currentTarget.name;
-    const index = newTodos.findIndex((todo) => {
-      if (todo.date == id) {
-        return true;
-      }
-    });
-    newTodos.splice(index, 1);
-    this.setState({
-      todos: newTodos
-    });
+  updateTeam(teamName) {
+    axios.get(`https://www.thesportsdb.com/api/v1/json/1/searchplayers.php?t=${teamName}`)
+      .then((r) => {
+        this.setState({
+          players: r.data.player
+        });
+      });
   }
+
 
   render() {
+    const { teams } = this.state;
+    const { players } = this.state;
+    
     return (
       <div className='container'>
-        <h1 className='text-white display-3'>Very Simple Todo App</h1>
-        <h3 className='text-white font-weight-light'>Track all the things</h3>
-        <hr className='border-white' />
+        <div className='jumbotron' id='jumbo'>
+          <h1><center className='title display-1'>Futbolero</center></h1>
+        </div>
         <div className='row'>
-          <div className='col-md-4'>
-            <NewTodo
-              handleClick={ this.handleClick }
+          <div className='col-md-6'>
+            <Teams
+              teams={ teams }
+              updateTeam={ this.updateTeam }
             />
           </div>
-          <div className='col-md-8'>
-            <TodoList
-              todos={ this.state.todos }
-              handleDeleteTodo={ this.handleDeleteTodo }
+          <div className='col-md-6'>
+            <Players
+              players={ players }
             />
           </div>
         </div>
